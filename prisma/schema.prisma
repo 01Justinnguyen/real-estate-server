@@ -12,3 +12,109 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id                    String         @id @default(uuid())
+  name                  String         @db.VarChar(255)
+  email                 String         @unique @db.Char(50)
+  phone                 String         @unique @db.Char(10)
+  address               String         @unique @db.VarChar(255)
+  password              String         @db.Char(50)
+  avatar                String         @default("") @db.Char(255)
+  email_verify_token    String         @default("") @db.VarChar(255)
+  forgot_password_token String         @default("") @db.VarChar(255)
+  created_at            DateTime       @default(now())
+  updated_at            DateTime       @default(now())
+  verify                Int            @default(0)
+  Role                  Role           @relation(fields: [roleId], references: [idRole], onDelete: NoAction, onUpdate: NoAction, map: "FK_Role_User_idx")
+  roleId                String
+  RefreshTokens         RefreshToken[]
+  // SocialLists           SocialList[]
+  // Submissions           Submission[]
+  // Properties            Property[]
+
+  @@index([roleId], map: "FK_Role_User_idx")
+}
+
+model Role {
+  idRole String @id @default(uuid())
+  code   Int    @unique
+  value  String @db.Char(255)
+  Users  User[]
+}
+
+model RefreshToken {
+  id         String   @id @default(uuid())
+  token      String   @db.Char(255)
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now())
+  User       User     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_User_idx")
+  userId     String
+
+  @@index([userId], map: "FK_User_idx")
+}
+
+// model SocialList {
+//   id       String @id @default(uuid())
+//   provider String
+//   link     String
+//   icon     String
+//   User     User   @relation(fields: [userId], references: [id])
+//   userId   String
+// }
+
+// model Submission {
+//   id      String @id @default(uuid())
+//   message String
+//   // property_id
+//   User    User   @relation(fields: [userId], references: [id])
+//   userId  String
+// }
+
+// model Property {
+//   id             String   @id @default(uuid())
+//   name           String
+//   description    String
+//   listing_type   Int
+//   price          Float
+//   status         Int
+//   images         Int
+//   bedroom_count  Int
+//   bathroom_count Int
+//   year_built     DateTime @default(now())
+//   size           Float
+//   feature_image  String
+//   stars          Float
+//   // property_type_id
+//   // agent_id
+//   User           User     @relation(fields: [userId], references: [id])
+//   userId         String
+// }
+
+// model PropertyType {
+//   id          String @id @default(uuid())
+//   name        String
+//   description String
+//   image       String
+// }
+
+// model PropertyFeature {
+//   id String @id @default(uuid())
+//   // property_id
+//   // feature_id
+// }
+
+// model Feature {
+//   id   String @id @default(uuid())
+//   name String
+//   imag String
+// }
+
+// model comment {
+//   id     String   @id @default(uuid())
+//   text   String
+//   parent Int
+//   date   DateTime @default(now())
+//   // user_id
+//   // property_id
+// }

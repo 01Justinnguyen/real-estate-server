@@ -24,6 +24,7 @@ const configSchema = z.object({
   API_URL_PRODUCTION: z.string(),
   DOMAIN: z.string(),
   AUTHOR: z.string(),
+  VERSION: z.string(),
   PROTOCOL: z.string()
 })
 
@@ -36,7 +37,7 @@ if (!configServer.success) {
 
 const envConfig = configServer.data
 
-export const API_URL = `${envConfig.PROTOCOL}://${envConfig.DOMAIN}:${envConfig.LOCAL_DEV_PORT}`
+export const API_URL = `${envConfig.PROTOCOL}://${envConfig.DOMAIN}:${envConfig.LOCAL_DEV_PORT}/${envConfig.VERSION}`
 export default envConfig
 
 // Đảm bảo các biến môi trường trong Nodejs (process.env) sẽ phải tuân theo cấu trúc xác định trong configSchema
