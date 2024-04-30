@@ -1,11 +1,28 @@
 import { CLIENT_MESSAGE } from '@/constants/clientMessages'
+import { passwordRegex, phoneRegex } from '@/constants/regex'
 import z from 'zod'
 
 export const RegisterBody = z
   .object({
-    name: z.string().trim().min(2).max(255),
-    password: z.string().min(6).max(100),
-    confirmPassword: z.string().min(6).max(100)
+    name: z
+      .string()
+      .trim()
+      .min(2, 'Tên phải lớn hơn hoặc bằng 2 ký tự')
+      .max(255, 'Tên phải nhỏ hơn hoặc bằng 255 ký tự'),
+    email: z.string().trim().email('Email không hợp lệ'),
+    role: z.enum(['USER', 'AGENT']),
+    phone: z
+      .string()
+      .trim()
+      .refine((phone) => {
+        return phoneRegex.test(phone)
+      }, 'Số điện thoại phải đủ 10 ký tự và bắt đầu bằng số 0'),
+    password: z.string().refine((password) => {
+      return passwordRegex.test(password)
+    }, 'Password phải chứa ít nhất 1 ký tự đặc biệt, 1 chữ cái viết thường, 1 chữ cái viết hoa, 1 số, không có dấu và có độ dài từ 8 đến 255 ký tự'),
+    confirmPassword: z.string().refine((password) => {
+      return passwordRegex.test(password)
+    }, 'Confirm password phải chứa ít nhất 1 ký tự đặc biệt, 1 chữ cái viết thường, 1 chữ cái viết hoa, 1 số, không có dấu và có độ dài từ 8 đến 255 ký tự')
   })
   .strict()
   .superRefine(({ confirmPassword, password }, ctx) => {

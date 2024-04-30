@@ -13,39 +13,54 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum ROLE {
+  USER
+  AGENT
+  ADMIN
+}
+
+enum STATUS {
+  ACTIVE
+  INACTIVE
+  BLOCKED
+}
+
+enum EMAIL_VERIFY {
+  VERIFY
+  UNVERIFY
+}
+
+enum PHONE_VERIFY {
+  VERIFY
+  UNVERIFY
+}
+
 model User {
   id                    String         @id @default(uuid())
   name                  String         @db.VarChar(255)
   email                 String         @unique @db.Char(50)
   phone                 String         @unique @db.Char(10)
-  address               String         @unique @db.VarChar(255)
-  password              String         @db.Char(50)
-  avatar                String         @default("") @db.Char(255)
-  email_verify_token    String         @default("") @db.VarChar(255)
-  forgot_password_token String         @default("") @db.VarChar(255)
+  password              String         @unique @db.Char(255)
+  address               String         @default("")
+  avatar                String         @default("")
+  email_verify_token    String         @db.Text
+  forgot_password_token String?        @db.Text
   created_at            DateTime       @default(now())
   updated_at            DateTime       @default(now())
-  verify                Int            @default(0)
-  Role                  Role           @relation(fields: [roleId], references: [idRole], onDelete: NoAction, onUpdate: NoAction, map: "FK_Role_User_idx")
-  roleId                String
+  date_of_birth         DateTime       @default(now())
+  email_verify          EMAIL_VERIFY   @default(UNVERIFY)
+  phone_verify          PHONE_VERIFY   @default(UNVERIFY)
+  role                  ROLE           @default(USER)
+  status                STATUS         @default(ACTIVE)
   RefreshTokens         RefreshToken[]
   // SocialLists           SocialList[]
   // Submissions           Submission[]
   // Properties            Property[]
-
-  @@index([roleId], map: "FK_Role_User_idx")
-}
-
-model Role {
-  idRole String @id @default(uuid())
-  code   Int    @unique
-  value  String @db.Char(255)
-  Users  User[]
 }
 
 model RefreshToken {
   id         String   @id @default(uuid())
-  token      String   @db.Char(255)
+  token      String   @db.Text
   created_at DateTime @default(now())
   updated_at DateTime @default(now())
   User       User     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_User_idx")
