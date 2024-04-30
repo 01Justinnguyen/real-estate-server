@@ -38,7 +38,7 @@ enum PHONE_VERIFY {
 model User {
   id                    String         @id @default(uuid())
   name                  String         @db.VarChar(255)
-  email                 String         @unique @db.Char(50)
+  email                 String         @db.Char(50)
   phone                 String         @unique @db.Char(10)
   password              String         @unique @db.Char(255)
   address               String         @default("")
@@ -53,9 +53,6 @@ model User {
   role                  ROLE           @default(USER)
   status                STATUS         @default(ACTIVE)
   RefreshTokens         RefreshToken[]
-  // SocialLists           SocialList[]
-  // Submissions           Submission[]
-  // Properties            Property[]
 }
 
 model RefreshToken {
