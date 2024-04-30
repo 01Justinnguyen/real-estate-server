@@ -40,9 +40,39 @@ export type RegisterBodyType = z.TypeOf<typeof RegisterBody>
 export const RegisterRes = z.object({
   message: z.string(),
   data: z.object({
-    id: z.number(),
-    name: z.string()
+    access_token: z.string(),
+    access_token_expiresAt: z.date(),
+    refresh_token: z.string(),
+    refresh_token_expiresAt: z.date()
   })
 })
 
 export type RegisterResType = z.TypeOf<typeof RegisterRes>
+
+export const LoginBody = z
+  .object({
+    phone: z
+      .string()
+      .trim()
+      .refine((phone) => {
+        return phoneRegex.test(phone)
+      }, 'Số điện thoại phải đủ 10 ký tự và bắt đầu bằng số 0'),
+    password: z.string().refine((password) => {
+      return passwordRegex.test(password)
+    }, 'Password phải chứa ít nhất 1 ký tự đặc biệt, 1 chữ cái viết thường, 1 chữ cái viết hoa, 1 số, không có dấu và có độ dài từ 8 đến 255 ký tự')
+  })
+  .strict()
+
+export type LoginBodyType = z.TypeOf<typeof LoginBody>
+
+export const LoginRes = z.object({
+  message: z.string(),
+  data: z.object({
+    access_token: z.string(),
+    access_token_expiresAt: z.date(),
+    refresh_token: z.string(),
+    refresh_token_expiresAt: z.date()
+  })
+})
+
+export type LoginResType = z.TypeOf<typeof LoginRes>
