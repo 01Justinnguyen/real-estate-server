@@ -1,4 +1,6 @@
+import { addMilliseconds } from 'date-fns'
 import jwt, { SignOptions } from 'jsonwebtoken'
+import ms from 'ms'
 
 export const signToken = ({
   payload,
@@ -17,4 +19,8 @@ export const signToken = ({
       resolve(token as string)
     })
   })
+}
+
+export const signTokenExpiresAt = (tokenExpiresIn: string) => {
+  return addMilliseconds(new Date(), ms(tokenExpiresIn))
 }
