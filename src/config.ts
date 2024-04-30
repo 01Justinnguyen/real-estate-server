@@ -24,8 +24,17 @@ const configSchema = z.object({
   API_URL_PRODUCTION: z.string(),
   DOMAIN: z.string(),
   AUTHOR: z.string(),
-  VERSION: z.string(),
-  PROTOCOL: z.string()
+  PROTOCOL: z.string(),
+
+  SECRET_PASSWORD: z.string(),
+  SECRET_JWT_ACCESS_TOKEN_KEY: z.string(),
+  SECRET_JWT_REFRESH_TOKEN_KEY: z.string(),
+  SECRET_JWT_EMAIL_VERIFY_TOKEN_KEY: z.string(),
+  SECRET_JWT_FORGOT_PASSWORD_TOKEN_KEY: z.string(),
+  ACCESS_TOKEN_EXPIRES_IN: z.string(),
+  REFRESH_TOKEN_EXPIRES_IN: z.string(),
+  EMAIL_VERIFY_TOKEN_EXPIRES_IN: z.string(),
+  FORGOT_PASSWORD_TOKEN_EXPIRES_IN: z.string()
 })
 
 const configServer = configSchema.safeParse(process.env)
@@ -37,7 +46,7 @@ if (!configServer.success) {
 
 const envConfig = configServer.data
 
-export const API_URL = `${envConfig.PROTOCOL}://${envConfig.DOMAIN}:${envConfig.LOCAL_DEV_PORT}/${envConfig.VERSION}`
+export const API_URL = `${envConfig.PROTOCOL}://${envConfig.DOMAIN}:${envConfig.LOCAL_DEV_PORT}`
 export default envConfig
 
 // Đảm bảo các biến môi trường trong Nodejs (process.env) sẽ phải tuân theo cấu trúc xác định trong configSchema

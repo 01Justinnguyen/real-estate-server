@@ -4,6 +4,7 @@ import cors from 'cors'
 import envConfig, { API_URL } from '@/config'
 import { isProduction } from '@/constants/config'
 import authRouter from '@/routes/auth.routes'
+import { badRequestException, defaultErrorHandler } from '@/middleware/errorHandler.middleware'
 
 config()
 const app = express()
@@ -27,7 +28,15 @@ if (isProduction) {
   )
 }
 
-app.use('/auth', authRouter)
+app.use('/v1/auth', authRouter)
+app.use('/', badRequestException)
+app.use('/v1/test', (req, res) => {
+  return res.json({
+    message: 'DONE oke la'
+  })
+})
+
+app.use(defaultErrorHandler)
 
 if (isProduction) {
   app.listen(process.env.PORT, () => {
@@ -40,5 +49,6 @@ if (isProduction) {
     console.log(
       `Development: Hi ${envConfig.AUTHOR}, Back-end Server is running successfully at HOST: ${envConfig.DOMAIN} and PORT: ${envConfig.LOCAL_DEV_PORT}`
     )
+    console.log(API_URL)
   })
 }
