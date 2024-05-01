@@ -59,25 +59,23 @@ class AuthService {
       phone_verify: PHONE_VERIFY.UNVERIFY
     })
 
-    await Promise.all([
-      prisma.user.create({
-        data: {
-          id: user_id,
-          name: payload.name,
-          email: payload.email,
-          phone: payload.phone,
-          email_verify_token: email_verify_token,
-          role: payload.role,
-          password: hashPassword(payload.password)
-        }
-      }),
-      prisma.refreshToken.create({
+    await prisma.user.create({
+      data: {
+        id: user_id,
+        name: payload.name,
+        email: payload.email,
+        phone: payload.phone,
+        email_verify_token: email_verify_token,
+        role: payload.role,
+        password: hashPassword(payload.password)
+      }
+    }),
+      await prisma.refreshToken.create({
         data: {
           userId: user_id,
           token: refresh_token
         }
       })
-    ])
 
     const access_token_expiresAt = signTokenExpiresAt(envConfig.ACCESS_TOKEN_EXPIRES_IN)
     const refresh_token_expiresAt = signTokenExpiresAt(envConfig.REFRESH_TOKEN_EXPIRES_IN)
