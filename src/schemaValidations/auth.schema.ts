@@ -2,6 +2,8 @@ import { CLIENT_MESSAGE } from '@/constants/clientMessages'
 import { passwordRegex, phoneRegex } from '@/constants/regex'
 import z from 'zod'
 
+/** Register */
+
 export const RegisterBody = z
   .object({
     name: z
@@ -49,6 +51,10 @@ export const RegisterRes = z.object({
 
 export type RegisterResType = z.TypeOf<typeof RegisterRes>
 
+/** Register */
+
+/** Login */
+
 export const LoginBody = z
   .object({
     phone: z
@@ -76,3 +82,28 @@ export const LoginRes = z.object({
 })
 
 export type LoginResType = z.TypeOf<typeof LoginRes>
+
+/** Login */
+
+/** Refresh Token */
+export const RefreshTokenBody = z
+  .object({
+    refresh_token: z.string().trim()
+  })
+  .strict()
+
+export type RefreshTokenBodyType = z.TypeOf<typeof RefreshTokenBody>
+
+export const RefreshTokenRes = z.object({
+  message: z.string(),
+  data: z.object({
+    new_access_token: z.string(),
+    access_token_expiresAt: z.date(),
+    new_refresh_token: z.string(),
+    refresh_token_expiresAt: z.date()
+  })
+})
+
+export type RefreshTokenResType = z.TypeOf<typeof RefreshTokenRes>
+
+/** Refresh Token */
