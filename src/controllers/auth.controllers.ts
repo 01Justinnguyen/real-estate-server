@@ -2,10 +2,17 @@ import { CLIENT_MESSAGE } from '@/constants/clientMessages'
 import { ParamsDictionary } from 'express-serve-static-core'
 import { Response, Request, NextFunction } from 'express'
 import asyncHandler from 'express-async-handler'
-import { LoginBodyType, RegisterBodyType, RegisterResType } from '@/schemaValidations/auth.schema'
+import {
+  LoginBodyType,
+  RefreshTokenBodyType,
+  RefreshTokenResType,
+  RegisterBodyType,
+  RegisterResType
+} from '@/schemaValidations/auth.schema'
 import authService from '@/services/auth.services'
 import { User } from '@prisma/client'
 import { PHONE_VERIFY } from '@/enums/userStatus'
+import { TokenPayload } from '@/interfaces/token.interfaces'
 
 export const registerController = asyncHandler(
   async (req: Request<ParamsDictionary, any, RegisterBodyType>, res: Response<RegisterResType>, next: NextFunction) => {
@@ -30,6 +37,23 @@ export const loginController = asyncHandler(
       message: CLIENT_MESSAGE.LOGIN_SUCCESS,
       data: {
         result
+      }
+    })
+  }
+)
+
+export const refreshTokenController = asyncHandler(
+  async (req: Request<ParamsDictionary, any, RefreshTokenBodyType>, res: Response<RefreshTokenResType>) => {
+    const { refresh_token } = req.body
+    const refresh_token_id = req.refresh_token_id as string
+    const { user_id, phone_verify } = req.decoded_refresh_token as TokenPayload
+
+    const result = await authService.refreshToken({ user_id, refresh_token, phone_verify, refresh_token_id })
+
+    res.json({
+      message: CLIENT_MESSAGE.REFRESH_TOKEN_SUCCESS,
+      data: {
+        ...result
       }
     })
   }

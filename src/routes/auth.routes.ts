@@ -1,5 +1,6 @@
-import { loginController, registerController } from '@/controllers/auth.controllers'
+import { loginController, refreshTokenController, registerController } from '@/controllers/auth.controllers'
 import { loginMiddleware, registerMiddleware } from '@/middleware/auth.middleware'
+import { refreshTokenValidator } from '@/middleware/token.middlewares'
 import { Router } from 'express'
 
 const authRouter = Router()
@@ -19,5 +20,13 @@ authRouter.post('/register', registerMiddleware, registerController)
  * Body: {phone:string'; password: string}
  */
 authRouter.post('/login', loginMiddleware, loginController)
+
+/**
+ * Description: Refresh token
+ * Path: /refresh-token
+ * Method: POST
+ * Body: {refresh_token: string}
+ */
+authRouter.post('/refresh-token', refreshTokenValidator, refreshTokenController)
 
 export default authRouter
