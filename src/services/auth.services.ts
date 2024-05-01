@@ -111,6 +111,46 @@ class AuthService {
       refresh_token_expiresAt
     }
   }
+
+  async refreshToken({
+    user_id,
+    refresh_token,
+    phone_verify,
+    refresh_token_id
+  }: {
+    user_id: string
+    refresh_token: string
+    refresh_token_id: string
+    phone_verify: PHONE_VERIFY
+  }) {
+    const [new_access_token, new_refresh_token] = await Promise.all([
+      this.signAccessToken({ user_id, phone_verify }),
+      this.signRefreshToken({ user_id, phone_verify }),
+
+      prisma.refreshToken.delete({
+        where: {
+          id: refresh_token_id
+        }
+      })
+    ])
+
+    await prisma.refreshToken.create({
+      data: {
+        userId: user_id,
+        token: new_refresh_token
+      }
+    })
+
+    const access_token_expiresAt = signTokenExpiresAt(envConfig.ACCESS_TOKEN_EXPIRES_IN)
+    const refresh_token_expiresAt = signTokenExpiresAt(envConfig.REFRESH_TOKEN_EXPIRES_IN)
+
+    return {
+      new_access_token,
+      access_token_expiresAt,
+      new_refresh_token,
+      refresh_token_expiresAt
+    }
+  }
 }
 
 const authService = new AuthService()
