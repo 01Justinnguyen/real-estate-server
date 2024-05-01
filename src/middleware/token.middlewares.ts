@@ -1,4 +1,4 @@
-import { RefreshTokenBody, RefreshTokenBodyType } from '@/schemaValidations/auth.schema'
+import { AuthorizationHeaderSchema, RefreshTokenBody, RefreshTokenBodyType } from '@/schemaValidations/auth.schema'
 import { ParamsDictionary } from 'express-serve-static-core'
 import { Request, Response, NextFunction } from 'express'
 import { verifyToken } from '@/utils/jwt'
@@ -39,7 +39,47 @@ export const refreshTokenValidator = async (
     let err = error
     if (err instanceof ZodError) {
       err = err.issues.map((e) => ({ path: e.path[0], message: e.message }))
-      return res.status(422).json({
+      return res.status(401).json({
+        status: 'failed',
+        error: err
+      })
+    } else if (err instanceof JsonWebTokenError) {
+      return res.status(401).json({
+        message: capitalize(err.message)
+      })
+    } else {
+      next(err)
+    }
+  }
+}
+
+export const accessTokenValidator = async (req: Request, res: Response, next: NextFunction) => {
+  if (!req.headers.authorization) {
+    return res.status(401).json({
+      message: CLIENT_MESSAGE.ACCESS_TOKEN_IS_REQUIRED
+    })
+  }
+  try {
+    AuthorizationHeaderSchema.parse(req.headers.authorization)
+    const access_token = req.headers.authorization.split(' ')[1]
+
+    if (access_token === undefined) {
+      return res.status(401).json({
+        message: CLIENT_MESSAGE.ACCESS_TOKEN_IS_REQUIRED
+      })
+    }
+
+    const decoded_authorization = await verifyToken({
+      token: access_token,
+      secretOrPublicKey: envConfig.SECRET_JWT_ACCESS_TOKEN_KEY as string
+    })
+    req.decoded_authorization = decoded_authorization
+    next()
+  } catch (error) {
+    let err = error
+    if (err instanceof ZodError) {
+      err = err.issues.map((e) => ({ path: e.path[0], message: e.message }))
+      return res.status(401).json({
         status: 'failed',
         error: err
       })
