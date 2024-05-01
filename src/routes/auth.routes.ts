@@ -1,6 +1,11 @@
-import { loginController, refreshTokenController, registerController } from '@/controllers/auth.controllers'
+import {
+  loginController,
+  logoutController,
+  refreshTokenController,
+  registerController
+} from '@/controllers/auth.controllers'
 import { loginMiddleware, registerMiddleware } from '@/middleware/auth.middleware'
-import { refreshTokenValidator } from '@/middleware/token.middlewares'
+import { accessTokenValidator, refreshTokenValidator } from '@/middleware/token.middlewares'
 import { Router } from 'express'
 
 const authRouter = Router()
@@ -28,5 +33,14 @@ authRouter.post('/login', loginMiddleware, loginController)
  * Body: {refresh_token: string}
  */
 authRouter.post('/refresh-token', refreshTokenValidator, refreshTokenController)
+
+/**
+ * Description: Logout
+ * Path: /logout
+ * Method: POST
+ * Header: {Authorization: Bearer <token>}
+ * Body: {refresh_token: string}
+ */
+authRouter.post('/logout', accessTokenValidator, refreshTokenValidator, logoutController)
 
 export default authRouter
