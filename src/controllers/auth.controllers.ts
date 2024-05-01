@@ -4,6 +4,9 @@ import { Response, Request, NextFunction } from 'express'
 import asyncHandler from 'express-async-handler'
 import {
   LoginBodyType,
+  LoginResType,
+  LogoutBodyType,
+  LogoutResType,
   RefreshTokenBodyType,
   RefreshTokenResType,
   RegisterBodyType,
@@ -27,7 +30,7 @@ export const registerController = asyncHandler(
 )
 
 export const loginController = asyncHandler(
-  async (req: Request<ParamsDictionary, any, LoginBodyType>, res: Response<any>, next: NextFunction) => {
+  async (req: Request<ParamsDictionary, any, LoginBodyType>, res: Response<LoginResType>, next: NextFunction) => {
     const user = req.user as User
     const { id } = user
     const phone_verify = user.phone_verify as PHONE_VERIFY
@@ -36,7 +39,7 @@ export const loginController = asyncHandler(
     res.json({
       message: CLIENT_MESSAGE.LOGIN_SUCCESS,
       data: {
-        result
+        ...result
       }
     })
   }
@@ -56,5 +59,14 @@ export const refreshTokenController = asyncHandler(
         ...result
       }
     })
+  }
+)
+
+export const logoutController = asyncHandler(
+  async (req: Request<ParamsDictionary, any, LogoutBodyType>, res: Response<LogoutResType>) => {
+    const { refresh_token } = req.body
+    const refresh_token_id = req.refresh_token_id as string
+    const result = await authService.logout({ refresh_token, refresh_token_id })
+    res.json(result)
   }
 )

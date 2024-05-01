@@ -107,3 +107,39 @@ export const RefreshTokenRes = z.object({
 export type RefreshTokenResType = z.TypeOf<typeof RefreshTokenRes>
 
 /** Refresh Token */
+
+/** Access Token */
+
+export const AuthorizationHeaderSchema = z.string().refine(
+  (value) => {
+    // Kiểm tra xem giá trị của header có chứa "Bearer" hay không
+    return value.startsWith('Bearer ')
+  },
+  {
+    message: 'Authorization header must be in the format "Bearer <token>"'
+  }
+)
+
+export type AuthorizationHeaderType = z.TypeOf<typeof AuthorizationHeaderSchema>
+
+/** Access Token */
+
+/** Logout */
+
+export const logoutBodyType = z
+  .object({
+    refresh_token: z.string().trim()
+  })
+  .strict()
+
+export type LogoutBodyType = z.TypeOf<typeof logoutBodyType>
+
+export const logoutRes = z
+  .object({
+    message: z.string()
+  })
+  .strict()
+
+export type LogoutResType = z.TypeOf<typeof logoutRes>
+
+/** Logout */

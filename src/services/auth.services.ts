@@ -1,4 +1,5 @@
 import envConfig from '@/config'
+import { CLIENT_MESSAGE } from '@/constants/clientMessages'
 import { TokenType } from '@/constants/type'
 import prisma from '@/database'
 import { PHONE_VERIFY } from '@/enums/userStatus'
@@ -129,7 +130,8 @@ class AuthService {
 
       prisma.refreshToken.delete({
         where: {
-          id: refresh_token_id
+          id: refresh_token_id,
+          token: refresh_token
         }
       })
     ])
@@ -149,6 +151,19 @@ class AuthService {
       access_token_expiresAt,
       new_refresh_token,
       refresh_token_expiresAt
+    }
+  }
+
+  async logout({ refresh_token, refresh_token_id }: { refresh_token: string; refresh_token_id: string }) {
+    await prisma.refreshToken.delete({
+      where: {
+        id: refresh_token_id,
+        token: refresh_token
+      }
+    })
+
+    return {
+      message: CLIENT_MESSAGE.LOGOUT_SUCCESS
     }
   }
 }
