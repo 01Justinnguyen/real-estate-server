@@ -6,7 +6,6 @@ import envConfig from '@/config'
 import prisma from '@/database'
 import { ZodError } from 'zod'
 import { CLIENT_MESSAGE } from '@/constants/clientMessages'
-import { TokenPayload } from '@/interfaces/token.interfaces'
 import { JsonWebTokenError } from 'jsonwebtoken'
 import { capitalize } from 'lodash'
 

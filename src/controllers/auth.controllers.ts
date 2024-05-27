@@ -32,9 +32,9 @@ export const registerController = asyncHandler(
 export const loginController = asyncHandler(
   async (req: Request<ParamsDictionary, any, LoginBodyType>, res: Response<LoginResType>, next: NextFunction) => {
     const user = req.user as User
-    const { id } = user
+    const { id, role } = user
     const phone_verify = user.phone_verify as PHONE_VERIFY
-    const result = await authService.login({ user_id: id, phone_verify })
+    const result = await authService.login({ user_id: id, phone_verify, role })
 
     res.json({
       message: CLIENT_MESSAGE.LOGIN_SUCCESS,
@@ -49,9 +49,9 @@ export const refreshTokenController = asyncHandler(
   async (req: Request<ParamsDictionary, any, RefreshTokenBodyType>, res: Response<RefreshTokenResType>) => {
     const { refresh_token } = req.body
     const refresh_token_id = req.refresh_token_id as string
-    const { user_id, phone_verify } = req.decoded_refresh_token as TokenPayload
+    const { user_id, phone_verify, role } = req.decoded_refresh_token as TokenPayload
 
-    const result = await authService.refreshToken({ user_id, refresh_token, phone_verify, refresh_token_id })
+    const result = await authService.refreshToken({ user_id, refresh_token, phone_verify, refresh_token_id, role })
 
     res.json({
       message: CLIENT_MESSAGE.REFRESH_TOKEN_SUCCESS,
