@@ -3,42 +3,75 @@ import { CLIENT_MESSAGE } from '@/constants/clientMessages'
 import { TokenType } from '@/constants/type'
 import prisma from '@/database'
 import { PHONE_VERIFY } from '@/enums/userStatus'
-import { LoginBodyType, RegisterBodyType } from '@/schemaValidations/auth.schema'
+import { RegisterBodyType } from '@/schemaValidations/auth.schema'
 import { hashPassword } from '@/utils/crypto'
 import { signToken, signTokenExpiresAt } from '@/utils/jwt'
+import { ROLE } from '@prisma/client'
 import { config } from 'dotenv'
 import { v4 as uuidv4 } from 'uuid'
 
 config()
 class AuthService {
-  private signAccessToken({ user_id, phone_verify }: { user_id: string; phone_verify: PHONE_VERIFY }) {
+  private signAccessToken({
+    user_id,
+    phone_verify,
+    role
+  }: {
+    user_id: string
+    phone_verify: PHONE_VERIFY
+    role: ROLE
+  }) {
     return signToken({
-      payload: { user_id, token_type: TokenType.AccessToken, phone_verify },
+      payload: { user_id, token_type: TokenType.AccessToken, phone_verify, role },
       privateKey: envConfig.SECRET_JWT_ACCESS_TOKEN_KEY,
       options: { expiresIn: envConfig.ACCESS_TOKEN_EXPIRES_IN }
     })
   }
 
-  private signRefreshToken({ user_id, phone_verify }: { user_id: string; phone_verify: PHONE_VERIFY }) {
+  private signRefreshToken({
+    user_id,
+    phone_verify,
+    role
+  }: {
+    user_id: string
+    phone_verify: PHONE_VERIFY
+    role: ROLE
+  }) {
     return signToken({
-      payload: { user_id, token_type: TokenType.RefreshToken, phone_verify },
+      payload: { user_id, token_type: TokenType.RefreshToken, phone_verify, role },
       privateKey: envConfig.SECRET_JWT_REFRESH_TOKEN_KEY,
       options: { expiresIn: envConfig.REFRESH_TOKEN_EXPIRES_IN }
     })
   }
 
-  private signEmailVerifyToken({ user_id, phone_verify }: { user_id: string; phone_verify: PHONE_VERIFY }) {
+  private signEmailVerifyToken({
+    user_id,
+    phone_verify,
+    role
+  }: {
+    user_id: string
+    phone_verify: PHONE_VERIFY
+    role: ROLE
+  }) {
     return signToken({
-      payload: { user_id, token_type: TokenType.EmailVerifyToken, phone_verify },
+      payload: { user_id, token_type: TokenType.EmailVerifyToken, phone_verify, role },
       privateKey: envConfig.SECRET_JWT_EMAIL_VERIFY_TOKEN_KEY,
       options: { expiresIn: envConfig.EMAIL_VERIFY_TOKEN_EXPIRES_IN }
     })
   }
 
-  private signAccessAndRefreshToken({ user_id, phone_verify }: { user_id: string; phone_verify: PHONE_VERIFY }) {
+  private signAccessAndRefreshToken({
+    user_id,
+    phone_verify,
+    role
+  }: {
+    user_id: string
+    phone_verify: PHONE_VERIFY
+    role: ROLE
+  }) {
     return Promise.all([
-      this.signAccessToken({ user_id, phone_verify }),
-      this.signRefreshToken({ user_id, phone_verify })
+      this.signAccessToken({ user_id, phone_verify, role }),
+      this.signRefreshToken({ user_id, phone_verify, role })
     ])
   }
 
@@ -53,9 +86,14 @@ class AuthService {
 
   async register(payload: RegisterBodyType) {
     const user_id = uuidv4()
-    const email_verify_token = await this.signEmailVerifyToken({ user_id, phone_verify: PHONE_VERIFY.UNVERIFY })
+    const email_verify_token = await this.signEmailVerifyToken({
+      user_id,
+      phone_verify: PHONE_VERIFY.UNVERIFY,
+      role: payload.role
+    })
     const [access_token, refresh_token] = await this.signAccessAndRefreshToken({
       user_id,
+      role: payload.role,
       phone_verify: PHONE_VERIFY.UNVERIFY
     })
 
@@ -88,9 +126,10 @@ class AuthService {
     }
   }
 
-  async login({ user_id, phone_verify }: { user_id: string; phone_verify: PHONE_VERIFY }) {
+  async login({ user_id, phone_verify, role }: { user_id: string; phone_verify: PHONE_VERIFY; role: ROLE }) {
     const [access_token, refresh_token] = await this.signAccessAndRefreshToken({
       user_id,
+      role,
       phone_verify
     })
     await prisma.refreshToken.create({
@@ -113,18 +152,20 @@ class AuthService {
 
   async refreshToken({
     user_id,
+    role,
     refresh_token,
     phone_verify,
     refresh_token_id
   }: {
     user_id: string
+    role: ROLE
     refresh_token: string
     refresh_token_id: string
     phone_verify: PHONE_VERIFY
   }) {
     const [new_access_token, new_refresh_token] = await Promise.all([
-      this.signAccessToken({ user_id, phone_verify }),
-      this.signRefreshToken({ user_id, phone_verify }),
+      this.signAccessToken({ user_id, phone_verify, role }),
+      this.signRefreshToken({ user_id, phone_verify, role }),
 
       prisma.refreshToken.delete({
         where: {
