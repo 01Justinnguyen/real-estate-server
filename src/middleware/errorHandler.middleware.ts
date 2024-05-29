@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express'
 
 export const badRequestException = (req: Request, res: Response, next: NextFunction) => {
   const error = new Error(`Route ${req.originalUrl} not found.`)
-  res.status(404)
+  res.status(400)
   next(error)
 }
 

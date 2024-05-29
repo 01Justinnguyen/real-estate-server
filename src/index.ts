@@ -22,21 +22,21 @@ if (isProduction) {
 } else {
   app.use(
     cors({
-      origin: API_URL,
+      origin: 'http://localhost:3000',
       methods: ['GET', 'POST', 'PUT', 'DELETE']
     })
   )
 }
 
 app.use('/v1/auth', authRouter)
-app.use('/', badRequestException)
 app.use('/v1/test', (req, res) => {
+  console.log(req.body)
   return res.json({
     message: 'DONE oke la'
   })
 })
-
 app.use(defaultErrorHandler)
+app.use('/', badRequestException)
 
 if (isProduction) {
   app.listen(process.env.PORT, () => {
