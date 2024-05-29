@@ -4,7 +4,7 @@ import {
   refreshTokenController,
   registerController
 } from '@/controllers/auth.controllers'
-import { loginMiddleware, registerMiddleware } from '@/middleware/auth.middleware'
+import { authorizeRole, loginMiddleware, registerMiddleware } from '@/middleware/auth.middleware'
 import { accessTokenValidator, refreshTokenValidator } from '@/middleware/token.middlewares'
 import { Router } from 'express'
 
@@ -41,6 +41,6 @@ authRouter.post('/refresh-token', refreshTokenValidator, refreshTokenController)
  * Header: {Authorization: Bearer <token>}
  * Body: {refresh_token: string}
  */
-authRouter.post('/logout', accessTokenValidator, refreshTokenValidator, logoutController)
+authRouter.post('/logout', accessTokenValidator, authorizeRole(['USER']), refreshTokenValidator, logoutController)
 
 export default authRouter
