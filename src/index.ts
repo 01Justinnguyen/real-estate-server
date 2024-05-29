@@ -5,6 +5,7 @@ import envConfig, { API_URL } from '@/config'
 import { isProduction } from '@/constants/config'
 import authRouter from '@/routes/auth.routes'
 import { badRequestException, defaultErrorHandler } from '@/middleware/errorHandler.middleware'
+import clientRouter from '@/routes/client.routes'
 
 config()
 const app = express()
@@ -29,6 +30,7 @@ if (isProduction) {
 }
 
 app.use('/v1/auth', authRouter)
+app.use('/v1/client', clientRouter)
 app.use('/v1/test', (req, res) => {
   console.log(req.body)
   return res.json({
