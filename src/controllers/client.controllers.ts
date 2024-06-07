@@ -13,3 +13,16 @@ export const getMeProfileController = asyncHandler(async (req: Request, res: Res
     data
   })
 })
+
+export const updateMeProfileController = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+  const user_id = (req.decoded_authorization as TokenPayload).user_id
+  const data = await clientService.updateMeProfile({
+    user_id,
+    data: req.body
+  })
+
+  res.json({
+    message: CLIENT_MESSAGE.UPDATE_ME_SUCCESS,
+    data
+  })
+})

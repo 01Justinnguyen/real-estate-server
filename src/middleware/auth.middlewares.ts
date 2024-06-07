@@ -27,8 +27,8 @@ export const registerMiddleware = async (
     if (err instanceof ZodError) {
       err = err.issues.map((e) => ({ path: e.path[0], message: e.message }))
       return res.status(422).json({
-        status: 'failed',
-        error: err
+        message: 'Unprocessable Entity',
+        errors: err
       })
     } else {
       next(err)
@@ -61,8 +61,8 @@ export const loginMiddleware = async (
     if (err instanceof ZodError) {
       err = err.issues.map((e) => ({ path: e.path[0], message: e.message }))
       return res.status(422).json({
-        status: 'failed',
-        error: err
+        message: 'Unprocessable Entity',
+        errors: err
       })
     } else {
       next(err)
