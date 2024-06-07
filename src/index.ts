@@ -6,9 +6,14 @@ import { isProduction } from '@/constants/config'
 import authRouter from '@/routes/auth.routes'
 import { badRequestException, defaultErrorHandler } from '@/middleware/errorHandler.middleware'
 import clientRouter from '@/routes/client.routes'
+import { accessTokenValidator } from '@/middleware/token.middlewares'
+import mediaRouter from '@/routes/media.routes'
+import { initFolder } from '@/utils/file'
 
 config()
 const app = express()
+
+initFolder()
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
@@ -31,7 +36,8 @@ if (isProduction) {
 
 app.use('/v1/auth', authRouter)
 app.use('/v1/client', clientRouter)
-app.use('/v1/test', (req, res) => {
+app.use('/v1/media', mediaRouter)
+app.use('/v1/test', accessTokenValidator, (req, res) => {
   console.log(req.body)
   return res.json({
     message: 'DONE oke la'

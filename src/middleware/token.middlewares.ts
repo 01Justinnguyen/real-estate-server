@@ -27,7 +27,7 @@ export const refreshTokenValidator = async (
       })
     ])
     if (refresh_token === null) {
-      return res.status(404).json({
+      return res.status(401).json({
         message: CLIENT_MESSAGE.USED_REFRESH_TOKEN_OR_NOT_EXIST
       })
     }

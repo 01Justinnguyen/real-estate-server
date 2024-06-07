@@ -4,7 +4,7 @@ import {
   refreshTokenController,
   registerController
 } from '@/controllers/auth.controllers'
-import { authorizeRole, loginMiddleware, registerMiddleware } from '@/middleware/auth.middleware'
+import { authorizeRole, loginMiddleware, registerMiddleware } from '@/middleware/auth.middlewares'
 import { accessTokenValidator, refreshTokenValidator } from '@/middleware/token.middlewares'
 import { Router } from 'express'
 
