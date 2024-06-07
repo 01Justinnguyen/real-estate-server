@@ -75,9 +75,10 @@ class AuthService {
     ])
   }
 
-  async checkExistingUser({ phone }: { phone: string }) {
+  async checkExistingUser({ id, phone }: { id?: string; phone?: string }) {
     const existingUser = await prisma.user.findUnique({
       where: {
+        id,
         phone
       }
     })
