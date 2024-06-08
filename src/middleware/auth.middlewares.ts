@@ -1,12 +1,12 @@
 import { LoginBody, LoginBodyType, RegisterBody, RegisterBodyType } from '@/schemaValidations/auth.schema'
 import { ParamsDictionary } from 'express-serve-static-core'
 import { Request, Response, NextFunction } from 'express'
-import { ZodError } from 'zod'
 import authService from '@/services/auth.services'
 import { CLIENT_MESSAGE } from '@/constants/clientMessages'
 import prisma from '@/database'
 import { hashPassword } from '@/utils/crypto'
 import { ROLE, User } from '@prisma/client'
+import { handleError } from '@/utils/handleErrors'
 
 export const registerMiddleware = async (
   req: Request<ParamsDictionary, any, RegisterBodyType>,
@@ -22,17 +22,13 @@ export const registerMiddleware = async (
       })
     }
     next()
-  } catch (error) {
-    let err = error
-    if (err instanceof ZodError) {
-      err = err.issues.map((e) => ({ path: e.path[0], message: e.message }))
-      return res.status(422).json({
-        message: 'Unprocessable Entity',
-        errors: err
-      })
-    } else {
-      next(err)
-    }
+  } catch (errors) {
+    handleError({
+      errors,
+      next,
+      res,
+      status: 422
+    })
   }
 }
 
@@ -56,17 +52,13 @@ export const loginMiddleware = async (
     }
     req.user = user as User
     next()
-  } catch (error) {
-    let err = error
-    if (err instanceof ZodError) {
-      err = err.issues.map((e) => ({ path: e.path[0], message: e.message }))
-      return res.status(422).json({
-        message: 'Unprocessable Entity',
-        errors: err
-      })
-    } else {
-      next(err)
-    }
+  } catch (errors) {
+    handleError({
+      errors,
+      next,
+      res,
+      status: 422
+    })
   }
 }
 

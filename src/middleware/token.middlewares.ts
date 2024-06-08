@@ -4,10 +4,8 @@ import { Request, Response, NextFunction } from 'express'
 import { verifyToken } from '@/utils/jwt'
 import envConfig from '@/config'
 import prisma from '@/database'
-import { ZodError } from 'zod'
 import { CLIENT_MESSAGE } from '@/constants/clientMessages'
-import { JsonWebTokenError } from 'jsonwebtoken'
-import { capitalize } from 'lodash'
+import { authorizationHandleErrors } from '@/utils/handleErrors'
 
 export const refreshTokenValidator = async (
   req: Request<ParamsDictionary, any, RefreshTokenBodyType>,
@@ -34,21 +32,13 @@ export const refreshTokenValidator = async (
     req.decoded_refresh_token = decoded_refresh_token
     req.refresh_token_id = refresh_token.id
     next()
-  } catch (error) {
-    let err = error
-    if (err instanceof ZodError) {
-      err = err.issues.map((e) => ({ path: e.path[0], message: e.message }))
-      return res.status(401).json({
-        status: 'failed',
-        error: err
-      })
-    } else if (err instanceof JsonWebTokenError) {
-      return res.status(401).json({
-        message: capitalize(err.message)
-      })
-    } else {
-      next(err)
-    }
+  } catch (errors) {
+    authorizationHandleErrors({
+      errors,
+      next,
+      res,
+      status: 401
+    })
   }
 }
 
@@ -74,20 +64,12 @@ export const accessTokenValidator = async (req: Request, res: Response, next: Ne
     })
     req.decoded_authorization = decoded_authorization
     next()
-  } catch (error) {
-    let err = error
-    if (err instanceof ZodError) {
-      err = err.issues.map((e) => ({ path: e.path[0], message: e.message }))
-      return res.status(401).json({
-        status: 'failed',
-        error: err
-      })
-    } else if (err instanceof JsonWebTokenError) {
-      return res.status(401).json({
-        message: capitalize(err.message)
-      })
-    } else {
-      next(err)
-    }
+  } catch (errors) {
+    authorizationHandleErrors({
+      errors,
+      next,
+      res,
+      status: 401
+    })
   }
 }
