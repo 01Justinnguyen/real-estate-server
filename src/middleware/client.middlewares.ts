@@ -2,9 +2,9 @@ import { CLIENT_MESSAGE } from '@/constants/clientMessages'
 import { TokenPayload } from '@/interfaces/token.interfaces'
 import { UpdateProfileBody, UpdateProfileBodyType } from '@/schemaValidations/client.schema'
 import authService from '@/services/auth.services'
-import handleError from '@/utils/handleErrors'
 import { Request, Response, NextFunction } from 'express'
 import { ParamsDictionary } from 'express-serve-static-core'
+import { ZodError } from 'zod'
 
 export const updateMeProfileMiddleware = async (
   req: Request<ParamsDictionary, any, UpdateProfileBodyType>,
@@ -22,12 +22,16 @@ export const updateMeProfileMiddleware = async (
       })
     }
     next()
-  } catch (errors) {
-    handleError({
-      errors,
-      next,
-      res,
-      status: 422
-    })
+  } catch (error) {
+    let err = error
+    if (err instanceof ZodError) {
+      err = err.issues.map((e) => ({ path: e.path[0], message: e.message }))
+      return res.status(422).json({
+        message: 'Unprocessable Entity',
+        errors: err
+      })
+    } else {
+      next(err)
+    }
   }
 }
