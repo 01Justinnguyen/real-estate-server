@@ -2,7 +2,7 @@ import { CLIENT_MESSAGE } from '@/constants/clientMessages'
 import { TokenPayload } from '@/interfaces/token.interfaces'
 import { UpdateProfileBody, UpdateProfileBodyType } from '@/schemaValidations/client.schema'
 import authService from '@/services/auth.services'
-import handleError from '@/utils/handleErrors'
+import { handleError } from '@/utils/handleErrors'
 import { Request, Response, NextFunction } from 'express'
 import { ParamsDictionary } from 'express-serve-static-core'
 

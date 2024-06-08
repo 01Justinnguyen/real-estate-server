@@ -9,6 +9,7 @@ import clientRouter from '@/routes/client.routes'
 import { accessTokenValidator } from '@/middleware/token.middlewares'
 import mediaRouter from '@/routes/media.routes'
 import { initFolder } from '@/utils/file'
+import { UPLOAD_DIR } from '@/constants/dir'
 
 config()
 const app = express()
@@ -36,15 +37,20 @@ if (isProduction) {
 
 app.use('/v1/auth', authRouter)
 app.use('/v1/client', clientRouter)
-app.use('/v1/media', mediaRouter)
+app.use('/v1/medias', mediaRouter)
+
+// static file
+app.use('/static', express.static(UPLOAD_DIR))
+
+app.use(defaultErrorHandler)
+app.use('/', badRequestException)
+
 app.use('/v1/test', accessTokenValidator, (req, res) => {
   console.log(req.body)
   return res.json({
     message: 'DONE oke la'
   })
 })
-app.use(defaultErrorHandler)
-app.use('/', badRequestException)
 
 if (isProduction) {
   app.listen(process.env.PORT, () => {
