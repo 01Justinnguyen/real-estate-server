@@ -23,7 +23,7 @@ export const UpdateProfileBody = z.object({
     .max(500, 'Địa chỉ phải nhỏ hơn hoặc bằng 500 ký tự')
     .optional(),
   avatar: z.string().url().optional(),
-  date_of_birth: z.string().optional()
+  date_of_birth: z.union([z.string(), z.date()]).optional()
 })
 
 export type UpdateProfileBodyType = z.TypeOf<typeof UpdateProfileBody>
