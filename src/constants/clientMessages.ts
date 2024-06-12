@@ -1,4 +1,5 @@
 export const CLIENT_MESSAGE = {
+  CREATE_ROLES_SUCCESS: 'Create roles success',
   VALIDATION_ERRORS: 'Validation error',
   NAME_IS_REQUIRED: 'Name is required',
   NAME_MUST_BE_A_STRING: 'Name must be a string',

@@ -6,7 +6,6 @@ import { PHONE_VERIFY } from '@/enums/userStatus'
 import { RegisterBodyType } from '@/schemaValidations/auth.schema'
 import { hashPassword } from '@/utils/crypto'
 import { signToken, signTokenExpiresAt } from '@/utils/jwt'
-import { ROLE } from '@prisma/client'
 import { config } from 'dotenv'
 import { v4 as uuidv4 } from 'uuid'
 
@@ -19,7 +18,7 @@ class AuthService {
   }: {
     user_id: string
     phone_verify: PHONE_VERIFY
-    role: ROLE
+    role: string
   }) {
     return signToken({
       payload: { user_id, token_type: TokenType.AccessToken, phone_verify, role },
@@ -35,7 +34,7 @@ class AuthService {
   }: {
     user_id: string
     phone_verify: PHONE_VERIFY
-    role: ROLE
+    role: string
   }) {
     return signToken({
       payload: { user_id, token_type: TokenType.RefreshToken, phone_verify, role },
@@ -51,7 +50,7 @@ class AuthService {
   }: {
     user_id: string
     phone_verify: PHONE_VERIFY
-    role: ROLE
+    role: string
   }) {
     return signToken({
       payload: { user_id, token_type: TokenType.EmailVerifyToken, phone_verify, role },
@@ -67,7 +66,7 @@ class AuthService {
   }: {
     user_id: string
     phone_verify: PHONE_VERIFY
-    role: ROLE
+    role: string
   }) {
     return Promise.all([
       this.signAccessToken({ user_id, phone_verify, role }),
@@ -90,11 +89,11 @@ class AuthService {
     const email_verify_token = await this.signEmailVerifyToken({
       user_id,
       phone_verify: PHONE_VERIFY.UNVERIFY,
-      role: payload.role
+      role: payload.roleCode
     })
     const [access_token, refresh_token] = await this.signAccessAndRefreshToken({
       user_id,
-      role: payload.role,
+      role: payload.roleCode,
       phone_verify: PHONE_VERIFY.UNVERIFY
     })
 
@@ -105,7 +104,7 @@ class AuthService {
         email: payload.email,
         phone: payload.phone,
         email_verify_token: email_verify_token,
-        role: payload.role,
+        roleCode: payload.roleCode,
         password: hashPassword(payload.password)
       }
     }),
@@ -127,7 +126,7 @@ class AuthService {
     }
   }
 
-  async login({ user_id, phone_verify, role }: { user_id: string; phone_verify: PHONE_VERIFY; role: ROLE }) {
+  async login({ user_id, phone_verify, role }: { user_id: string; phone_verify: PHONE_VERIFY; role: string }) {
     const [access_token, refresh_token] = await this.signAccessAndRefreshToken({
       user_id,
       role,
@@ -159,7 +158,7 @@ class AuthService {
     refresh_token_id
   }: {
     user_id: string
-    role: ROLE
+    role: string
     refresh_token: string
     refresh_token_id: string
     phone_verify: PHONE_VERIFY
