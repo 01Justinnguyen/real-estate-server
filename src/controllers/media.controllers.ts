@@ -8,6 +8,6 @@ export const uploadAvatarController = asyncHandler(async (req: Request, res: Res
   const image_url = await mediaService.uploadSingleimage(req)
   res.json({
     message: CLIENT_MESSAGE.UPLOAD_SUCCESS,
-    result: image_url
+    data: image_url
   })
 })
