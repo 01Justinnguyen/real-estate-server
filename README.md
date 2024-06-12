@@ -20,6 +20,8 @@
 &nbsp;
 <span><img src="https://img.shields.io/badge/Redis-282C34?logo=redis&logoColor=ff4438" alt="Redis logo" title="Redis" height="25" /></span>
 &nbsp;
+<span><img src="https://img.shields.io/badge/Swagger-282C34?logo=swagger&logoColor=#85ea2d" alt="Swagger logo" title="Swagger" height="25" /></span>
+&nbsp;
 <span><img src="https://img.shields.io/badge/Javascript-282C34?logo=javascript&logoColor=#52b0e7" alt="Javascript logo" title="Javascript" height="25" /></span>
 &nbsp;
 <span><img src="https://img.shields.io/badge/Typescript-282C34?logo=typescript&logoColor=#52b0e7" alt="Typescript logo" title="Typescript" height="25" /></span>
