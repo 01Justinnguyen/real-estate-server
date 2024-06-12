@@ -10,6 +10,7 @@ import { accessTokenValidator } from '@/middleware/token.middlewares'
 import mediaRouter from '@/routes/media.routes'
 import { initFolder } from '@/utils/file'
 import { UPLOAD_DIR } from '@/constants/dir'
+import insertRouter from '@/routes/insert.routes'
 
 config()
 const app = express()
@@ -38,6 +39,7 @@ if (isProduction) {
 app.use('/v1/auth', authRouter)
 app.use('/v1/client', clientRouter)
 app.use('/v1/medias', mediaRouter)
+app.use('/v1/insert', insertRouter)
 
 // static file
 app.use('/static', express.static(UPLOAD_DIR))

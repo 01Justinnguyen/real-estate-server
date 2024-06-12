@@ -5,7 +5,7 @@ import authService from '@/services/auth.services'
 import { CLIENT_MESSAGE } from '@/constants/clientMessages'
 import prisma from '@/database'
 import { hashPassword } from '@/utils/crypto'
-import { ROLE, User } from '@prisma/client'
+import { User } from '@prisma/client'
 import { handleError } from '@/utils/handleErrors'
 
 export const registerMiddleware = async (
@@ -62,9 +62,9 @@ export const loginMiddleware = async (
   }
 }
 
-export const authorizeRole = (roles: ROLE[]) => {
+export const authorizeRole = (roles: string[]) => {
   return (req: Request, res: Response, next: NextFunction) => {
-    if (!roles.includes(req.decoded_authorization?.role as ROLE)) {
+    if (!roles.includes(req.decoded_authorization?.role as string)) {
       return res.status(403).json({
         message: 'Permission Denied'
       })

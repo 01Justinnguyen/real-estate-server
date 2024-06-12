@@ -27,3 +27,14 @@ export const UpdateProfileBody = z.object({
 })
 
 export type UpdateProfileBodyType = z.TypeOf<typeof UpdateProfileBody>
+
+export const RoleBody = z.object({
+  code: z.string().trim().min(2, 'Code phải lớn hơn hoặc bằng 2 ký tự').max(50, 'Code phải nhỏ hơn hoặc bằng 50 ký tự'),
+  value: z
+    .string()
+    .trim()
+    .min(5, 'Value phải lớn hơn hoặc bằng 2 ký tự')
+    .max(191, 'Value phải nhỏ hơn hoặc bằng 191 ký tự')
+})
+
+export type RoleBodyType = z.TypeOf<typeof RoleBody>

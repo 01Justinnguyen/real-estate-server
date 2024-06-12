@@ -32,9 +32,9 @@ export const registerController = asyncHandler(
 export const loginController = asyncHandler(
   async (req: Request<ParamsDictionary, any, LoginBodyType>, res: Response<LoginResType>, next: NextFunction) => {
     const user = req.user as User
-    const { id, role } = user
+    const { id, roleCode } = user
     const phone_verify = user.phone_verify as PHONE_VERIFY
-    const result = await authService.login({ user_id: id, phone_verify, role })
+    const result = await authService.login({ user_id: id, phone_verify, role: roleCode })
 
     res.json({
       message: CLIENT_MESSAGE.LOGIN_SUCCESS,

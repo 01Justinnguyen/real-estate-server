@@ -13,12 +13,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum ROLE {
-  USER
-  AGENT
-  ADMIN
-}
-
 enum STATUS {
   ACTIVE
   INACTIVE
@@ -59,15 +53,25 @@ model User {
   date_of_birth         DateTime       @default(now())
   email_verify          EMAIL_VERIFY   @default(UNVERIFY)
   phone_verify          PHONE_VERIFY   @default(UNVERIFY)
-  role                  ROLE           @default(USER)
   status                STATUS         @default(ACTIVE)
   RefreshTokens         RefreshToken[]
   UserMedias            UserMedia[]
   Submissions           Submission[]
-  Properties            Property[]
+  Properties            Property[]     @relation("UserProperties")
+  OwnedProperties       Property[]     @relation("UserOwnedProperties")
   Comments              Comment[]
+  role                  Role           @relation(fields: [roleCode], references: [code], onDelete: NoAction, onUpdate: NoAction, map: "FK_User_Role_idx")
+  roleCode              String         @default("ROLE7")
   created_at            DateTime       @default(now())
   updated_at            DateTime       @default(now())
+
+  @@index([roleCode], map: "FK_User_Role_idx")
+}
+
+model Role {
+  code  String @id @db.VarChar(50)
+  value String
+  Users User[]
 }
 
 model RefreshToken {
@@ -124,8 +128,10 @@ model Property {
   feature_image    String            @db.VarChar(155)
   stars            Float
   PropertyType     PropertyType      @relation(fields: [propertyTypeId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_Property_PropertyType_idx")
-  PostedBy         User              @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_Property_User_idx")
+  PostedBy         User              @relation(name: "UserProperties", fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_Property_User_idx")
+  owner            User              @relation(name: "UserOwnedProperties", fields: [ownerId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_Property_Owner_User_idx")
   userId           String
+  ownerId          String
   propertyTypeId   String
   Submission       Submission[]
   Comments         Comment[]
@@ -136,6 +142,7 @@ model Property {
 
   @@index([userId], map: "FK_Property_User_idx")
   @@index([propertyTypeId], map: "FK_Property_PropertyType_idx")
+  @@index([ownerId], map: "FK_Property_Owner_User_idx")
 }
 
 model Image {
