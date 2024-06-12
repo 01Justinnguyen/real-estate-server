@@ -12,7 +12,7 @@ export const RegisterBody = z
       .min(2, 'Tên phải lớn hơn hoặc bằng 2 ký tự')
       .max(255, 'Tên phải nhỏ hơn hoặc bằng 255 ký tự'),
     email: z.string().trim().email('Email không hợp lệ'),
-    role: z.enum(['USER', 'AGENT']),
+    roleCode: z.string().trim(),
     phone: z
       .string()
       .trim()
