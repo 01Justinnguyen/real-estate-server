@@ -1,7 +1,9 @@
 import { createNewPropertyTypeController, getPropertyTypesController } from '@/controllers/propertyType.controllers'
 import { authorizeRole } from '@/middleware/auth.middlewares'
+import { filterBodyRequestMiddleware } from '@/middleware/common.middlewares'
 import { createNewPropertyTypeMiddleware } from '@/middleware/propertyType.middlewares'
 import { accessTokenValidator } from '@/middleware/token.middlewares'
+import { PropertyTypeBodyType } from '@/schemaValidations/propertyType.schema'
 import { Router } from 'express'
 
 const propertyTypeRouter = Router()
@@ -16,6 +18,7 @@ propertyTypeRouter.post(
   '/create',
   accessTokenValidator,
   authorizeRole(['ROLE1']),
+  filterBodyRequestMiddleware<PropertyTypeBodyType>(['name', 'image', 'description']),
   createNewPropertyTypeMiddleware,
   createNewPropertyTypeController
 )

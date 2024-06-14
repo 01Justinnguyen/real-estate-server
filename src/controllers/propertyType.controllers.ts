@@ -27,18 +27,6 @@ export const getPropertyTypesController = asyncHandler(
         query
       })
 
-      const a = {
-        id: 1,
-        name: '123',
-        description: '123',
-        image: 'alo123',
-        created_at: 'Fri Jun 14 2024 22:29:02 GMT+0700',
-        updated_at: 'Fri Jun 14 2024 22:29:02 GMT+0700'
-      }
-
-      const b = exclude(a, ['updated_at', 'created_at', 'id'])
-      console.log('🐻 ~ b:', b)
-
       res.json({
         message: CLIENT_MESSAGE.GET_PROPERTY_TYPES_SUCCESS,
         data
