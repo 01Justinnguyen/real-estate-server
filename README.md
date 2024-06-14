@@ -49,7 +49,7 @@ COMING SOON
 
 ### Guide for this repository is here:
 
-Author: **THANH Phúc** aka **Liamdev**
+Author: **THANH PHÚC** aka **Liamdev**
 
 "The only person you should try to be better than is the person you were yesterday.!"
 
