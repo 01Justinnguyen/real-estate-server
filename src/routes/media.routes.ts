@@ -5,6 +5,6 @@ import { Router } from 'express'
 
 const mediaRouter = Router()
 
-mediaRouter.post('/upload-avatar', accessTokenValidator, authorizeRole(['AGENT', 'USER']), uploadAvatarController)
+mediaRouter.post('/upload-avatar', accessTokenValidator, authorizeRole(['']), uploadAvatarController)
 
 export default mediaRouter

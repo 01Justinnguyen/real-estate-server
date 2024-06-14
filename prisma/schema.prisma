@@ -41,7 +41,7 @@ enum PROPERTY_STATUS {
 }
 
 model User {
-  id                    String         @id @default(uuid())
+  id                    String         @id @default(uuid()) @db.Char(36)
   name                  String         @db.VarChar(255)
   email                 String         @db.Char(50)
   phone                 String         @unique @db.Char(10)
@@ -75,10 +75,10 @@ model Role {
 }
 
 model RefreshToken {
-  id         String   @id @default(uuid())
+  id         String   @id @default(uuid()) @db.Char(36)
   token      String   @db.Text
   User       User     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_RefreshToken_User_idx")
-  userId     String
+  userId     String   @db.Char(36)
   created_at DateTime @default(now())
   updated_at DateTime @default(now())
 
@@ -86,12 +86,12 @@ model RefreshToken {
 }
 
 model UserMedia {
-  id         String   @id @default(uuid())
+  id         String   @id @default(uuid()) @db.Char(36)
   provider   String
   link       String
   icon       String
   User       User     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_UserMedia_User_idx")
-  userId     String
+  userId     String   @db.Char(36)
   created_at DateTime @default(now())
   updated_at DateTime @default(now())
 
@@ -99,12 +99,12 @@ model UserMedia {
 }
 
 model Submission {
-  id         String   @id @default(uuid())
+  id         String   @id @default(uuid()) @db.Char(36)
   message    String
   User       User     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_Submission_User_idx")
   Property   Property @relation(fields: [propertyId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_Submission_Property_idx")
-  userId     String
-  propertyId String
+  userId     String   @db.Char(36)
+  propertyId String   @db.Char(36)
   created_at DateTime @default(now())
   updated_at DateTime @default(now())
 
@@ -113,9 +113,9 @@ model Submission {
 }
 
 model Property {
-  id               String            @id @default(uuid())
+  id               String            @id @default(uuid()) @db.Char(36)
   name             String            @db.VarChar(50)
-  description      String            @db.VarChar(255)
+  description      String            @db.Text
   listing_type     LISTING_TYPE
   price            Float
   status           PROPERTY_STATUS   @default(PENDING)
@@ -130,9 +130,9 @@ model Property {
   PropertyType     PropertyType      @relation(fields: [propertyTypeId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_Property_PropertyType_idx")
   PostedBy         User              @relation(name: "UserProperties", fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_Property_User_idx")
   owner            User              @relation(name: "UserOwnedProperties", fields: [ownerId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_Property_Owner_User_idx")
-  userId           String
-  ownerId          String
-  propertyTypeId   String
+  userId           String            @db.Char(36)
+  ownerId          String            @db.Char(36)
+  propertyTypeId   String            @db.Char(36)
   Submission       Submission[]
   Comments         Comment[]
   PropertyFeatures PropertyFeature[]
@@ -146,18 +146,18 @@ model Property {
 }
 
 model Image {
-  id          String   @id @default(uuid())
-  description String
+  id          String   @id @default(uuid()) @db.Char(36)
+  description String   @db.Text
   Property    Property @relation(fields: [propertyId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_Image_Property_idx")
-  propertyId  String
+  propertyId  String   @db.Char(36)
 
   @@index([propertyId], map: "FK_Image_Property_idx")
 }
 
 model PropertyType {
-  id          String     @id @default(uuid())
+  id          String     @id @default(uuid()) @db.Char(36)
   name        String
-  description String
+  description String     @db.Text
   image       String
   Properties  Property[]
   created_at  DateTime   @default(now())
@@ -165,11 +165,11 @@ model PropertyType {
 }
 
 model PropertyFeature {
-  id         String   @id @default(uuid())
+  id         String   @id @default(uuid()) @db.Char(36)
   Property   Property @relation(fields: [propertyId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_PropertyFeature_Property_idx")
   Feature    Feature  @relation(fields: [featureId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_PropertyFeature_Feature_idx")
-  propertyId String
-  featureId  String
+  propertyId String   @db.Char(36)
+  featureId  String   @db.Char(36)
   created_at DateTime @default(now())
   updated_at DateTime @default(now())
 
@@ -178,23 +178,23 @@ model PropertyFeature {
 }
 
 model Feature {
-  id               String            @id @default(uuid())
+  id               String            @id @default(uuid()) @db.Char(36)
   name             String
-  imag             String
+  image            String
   PropertyFeatures PropertyFeature[]
   created_at       DateTime          @default(now())
   updated_at       DateTime          @default(now())
 }
 
 model Comment {
-  id         String   @id @default(uuid())
+  id         String   @id @default(uuid()) @db.Char(36)
   text       String
   parent     Int
   date       DateTime @default(now())
   User       User     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_Comment_User_idx")
   Property   Property @relation(fields: [propertyId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_Comment_Property_idx")
-  userId     String
-  propertyId String
+  userId     String   @db.Char(36)
+  propertyId String   @db.Char(36)
   created_at DateTime @default(now())
   updated_at DateTime @default(now())
 

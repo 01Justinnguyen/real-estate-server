@@ -6,10 +6,8 @@ import { PHONE_VERIFY } from '@/enums/userStatus'
 import { RegisterBodyType } from '@/schemaValidations/auth.schema'
 import { hashPassword } from '@/utils/crypto'
 import { signToken, signTokenExpiresAt } from '@/utils/jwt'
-import { config } from 'dotenv'
 import { v4 as uuidv4 } from 'uuid'
 
-config()
 class AuthService {
   private signAccessToken({
     user_id,
