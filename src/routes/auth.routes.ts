@@ -41,6 +41,6 @@ authRouter.post('/refresh-token', refreshTokenValidator, refreshTokenController)
  * Header: {Authorization: Bearer <token>}
  * Body: {refresh_token: string}
  */
-authRouter.post('/logout', accessTokenValidator, authorizeRole(['USER']), refreshTokenValidator, logoutController)
+authRouter.post('/logout', accessTokenValidator, authorizeRole(['']), refreshTokenValidator, logoutController)
 
 export default authRouter
