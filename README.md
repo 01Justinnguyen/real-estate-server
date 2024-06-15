@@ -44,7 +44,7 @@
 Clone project and run test.
 
 ```
-COMING SOON
+COMING SOON !!!
 ```
 
 ### Guide for this repository is here:
