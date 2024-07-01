@@ -1,4 +1,7 @@
 export const CLIENT_MESSAGE = {
+  DELETE_ALL_PROPERTY_TYPE_SUCCESS: 'Delete all property type success',
+  DELETE_PROPERTY_TYPE_SUCCESS: 'Delete property type success',
+  UPDATE_PROPERTY_TYPE_SUCCESS: 'Update property type success',
   GET_PROPERTY_TYPES_SUCCESS: 'Get property types success',
   CREATE_PROPERTY_TYPE_SUCCESS: 'Create property type success',
   CREATE_ROLES_SUCCESS: 'Create roles success',

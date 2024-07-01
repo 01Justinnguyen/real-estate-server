@@ -10,15 +10,47 @@ class PropertyTypeService {
     return response
   }
 
-  async getAllPropertyType({ selectOptions, query }: { selectOptions?: SelectObject; query: any }) {
+  async getAllPropertyType({
+    selectOptions,
+    query,
+    orderBy
+  }: {
+    selectOptions?: SelectObject
+    query: any
+    orderBy?: any
+  }) {
+    console.log('🐻 ~ PropertyTypeService ~ orderBy:', orderBy)
+    console.log('🐻 ~ PropertyTypeService ~ selectOptions:', selectOptions)
     const data = await prisma.propertyType.findMany({
       where: query,
-      select: selectOptions
+      select: selectOptions,
+      orderBy
     })
     return data
   }
 
   async getOnePropertyType() {}
+
+  async updatePropertyType(id: string, data: any) {
+    await prisma.propertyType.update({
+      where: {
+        id
+      },
+      data
+    })
+  }
+
+  async deletePropertyType(id: string) {
+    await prisma.propertyType.delete({
+      where: {
+        id
+      }
+    })
+  }
+
+  async deleteAllPropertyType() {
+    await prisma.propertyType.deleteMany({})
+  }
 }
 
 const propertyTypeService = new PropertyTypeService()
