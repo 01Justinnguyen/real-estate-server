@@ -1,4 +1,10 @@
-import { createNewPropertyTypeController, getPropertyTypesController } from '@/controllers/propertyType.controllers'
+import {
+  createNewPropertyTypeController,
+  deleteAllPropertyTypeController,
+  deletePropertyTypeController,
+  getPropertyTypesController,
+  updatePropertyTypeController
+} from '@/controllers/propertyType.controllers'
 import { authorizeRole } from '@/middleware/auth.middlewares'
 import { filterBodyRequestMiddleware } from '@/middleware/common.middlewares'
 import { createNewPropertyTypeMiddleware } from '@/middleware/propertyType.middlewares'
@@ -29,6 +35,45 @@ propertyTypeRouter.post(
  * Method: POST
  * Body: {name: string; email: string; password: string; phone: string; role: "USER" | "AGENT"}
  */
-propertyTypeRouter.get('/getPropertyTypes', getPropertyTypesController)
+propertyTypeRouter.get('/getPropertyTypes', accessTokenValidator, authorizeRole(['ROLE1']), getPropertyTypesController)
+
+/**
+ * Description: Register an account
+ * Path: /auth/register
+ * Method: POST
+ * Body: {name: string; email: string; password: string; phone: string; role: "USER" | "AGENT"}
+ */
+propertyTypeRouter.patch(
+  '/updatePropertyType/:id',
+  accessTokenValidator,
+  authorizeRole(['ROLE1']),
+  updatePropertyTypeController
+)
+
+/**
+ * Description: Register an account
+ * Path: /auth/register
+ * Method: POST
+ * Body: {name: string; email: string; password: string; phone: string; role: "USER" | "AGENT"}
+ */
+propertyTypeRouter.delete(
+  '/deletePropertyType/:id',
+  accessTokenValidator,
+  authorizeRole(['ROLE1']),
+  deletePropertyTypeController
+)
+
+/**
+ * Description: Register an account
+ * Path: /auth/register
+ * Method: POST
+ * Body: {name: string; email: string; password: string; phone: string; role: "USER" | "AGENT"}
+ */
+propertyTypeRouter.delete(
+  '/deleteAllPropertyType',
+  accessTokenValidator,
+  authorizeRole(['ROLE1']),
+  deleteAllPropertyTypeController
+)
 
 export default propertyTypeRouter
