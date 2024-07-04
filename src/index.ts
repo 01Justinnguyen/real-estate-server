@@ -12,6 +12,7 @@ import { initFolder } from '@/utils/file'
 import { UPLOAD_DIR } from '@/constants/dir'
 import insertRouter from '@/routes/insert.routes'
 import propertyTypeRouter from '@/routes/propertyType.routes'
+import connectionRedis from '@/database/redis.config'
 
 config()
 const app = express()
@@ -20,7 +21,7 @@ initFolder()
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
-
+connectionRedis()
 if (isProduction) {
   app.use(
     cors({
