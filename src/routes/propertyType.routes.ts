@@ -8,11 +8,14 @@ import {
 import { authorizeRole } from '@/middleware/auth.middlewares'
 import { filterBodyRequestMiddleware } from '@/middleware/common.middlewares'
 import { createNewPropertyTypeMiddleware } from '@/middleware/propertyType.middlewares'
+import rateLimiter from '@/middleware/rateLimiter'
 import { accessTokenValidator } from '@/middleware/token.middlewares'
 import { PropertyTypeBodyType } from '@/schemaValidations/propertyType.schema'
 import { Router } from 'express'
 
 const propertyTypeRouter = Router()
+
+propertyTypeRouter.use(rateLimiter)
 
 /**
  * Description: Register an account

@@ -8,6 +8,7 @@ import { PropertyTypeBodyType } from '@/schemaValidations/propertyType.schema'
 import { SuccessResponseApi } from '@/interfaces/utils.interfaces'
 import { buildSelectObject, SelectObject } from '@/utils/utils'
 import prisma from '@/database'
+import { clientRedis } from '@/database/redis.config'
 
 export const getPropertyTypesController = async (req: Request, res: Response, next: NextFunction) => {
   const { limit, page, fields, name, sortBy, ...query } = req.query
@@ -36,12 +37,20 @@ export const getPropertyTypesController = async (req: Request, res: Response, ne
   }
 
   if (!limit) {
-    console.log('alo123 nef')
+    const alreadyGetAll = await clientRedis.get('property-type')
+    if (alreadyGetAll) {
+      return res.json({
+        message: CLIENT_MESSAGE.GET_PROPERTY_TYPES_SUCCESS,
+        data: JSON.parse(alreadyGetAll)
+      })
+    }
     const data = await propertyTypeService.getAllPropertyType({
       selectOptions: selectOptions as SelectObject,
       query,
       orderBy
     })
+
+    clientRedis.set('property-type', JSON.stringify(data))
 
     return res.json({
       message: data.length > 0 ? CLIENT_MESSAGE.GET_PROPERTY_TYPES_SUCCESS : 'Cannot get propertyTypes',
